@@ -20,7 +20,15 @@
 #
 # Copyright 2013 Brainsware
 #
-class rsyslog {
+class rsyslog (
+  $udp  = $rsyslog::params::udp,
+  $tcp  = $rsyslog::params::tcp,
+  $relp = $rsyslog::params::relp,
+) inherits rsyslog::params {
 
+  anchor { 'begin': }
+  class { 'rsyslog::install': } ~>
+  class { 'rsyslog::service': }
+  anchor { 'end': }
 
 }
