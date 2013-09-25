@@ -17,7 +17,6 @@ require 'spec_helper_system'
 describe 'rsyslog class' do
     package_name = 'rsyslog'
     service_name = 'rsyslog'
-    virtinst_package = 'python-virtinst'
 
   context 'default parameters' do
     # Using puppet_apply as a helper
@@ -40,6 +39,72 @@ describe 'rsyslog class' do
     describe service(service_name) do
       it { should be_enabled }
       it { should be_running }
+    end
+
+  end
+
+  context 'with udp enabled' do
+    # Using puppet_apply as a helper
+    it 'should work with no errors' do
+      pp = <<-EOS
+      class { 'rsyslog':
+        udp => true,
+      }
+      EOS
+
+      # Run it twice and test for idempotency
+      puppet_apply(pp) do |r|
+        r.exit_code.should_not == 1
+        r.refresh
+        r.exit_code.should be_zero
+      end
+    end
+
+    describe package(package_name) do
+      it { should be_installed }
+    end
+    describe service(service_name) do
+      it { should be_enabled }
+      it { should be_running }
+    end
+
+    it 'should receive log messages on UDP port 514' do
+      shell('logger -d -P 514 "It receives log messages on UDP port 514!" && grep -q "It receives log messages on UDP port 514!" /var/log/syslog') do |r|
+        r.exit_code.should == 0
+      end
+    end
+
+  end
+
+  context 'with tcp on non-standard port enabled' do
+    # Using puppet_apply as a helper
+    it 'should work with no errors' do
+      pp = <<-EOS
+      class { 'rsyslog':
+        tcp => '5140',
+      }
+      EOS
+
+      # Run it twice and test for idempotency
+      puppet_apply(pp) do |r|
+        r.exit_code.should_not == 1
+        r.refresh
+        r.exit_code.should be_zero
+      end
+    end
+
+    describe package(package_name) do
+      it { should be_installed }
+    end
+    describe service(service_name) do
+      it { should be_enabled }
+      it { should be_running }
+    end
+
+    it 'should receive log messages on TCP port 5140' do
+      shell('logger -P 5140 "It receives log messages on TCP port 5140!" && grep -q "It receives log messages on TCP port 5140!" /var/log/syslog') do |r|
+        r.exit_code.should == 0
+      end
     end
 
   end

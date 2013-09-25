@@ -19,10 +19,13 @@ class rsyslog::install {
     ensure => installed,
   }
 
-  if $::rsyslog::relp {
-    package { $rsyslog::params::relp_package:
-      ensure => installed,
-    }
+  $relp_ensure = $::rsyslog::relp? {
+    false   => 'absent',
+    default => 'installed'
+  }
+
+  package { $rsyslog::params::relp_package:
+    ensure => $relp_ensure,
   }
 
 }

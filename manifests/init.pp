@@ -27,7 +27,8 @@ class rsyslog (
 ) inherits rsyslog::params {
 
   anchor { 'begin': }
-  class { 'rsyslog::install': } ~>
+  class { 'rsyslog::install': } ->
+  class { 'rsyslog::config': } ~>
   class { 'rsyslog::service': }
   anchor { 'end': }
 
