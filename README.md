@@ -11,9 +11,26 @@ Installing rsyslog
      include rsyslog
 ```
 
+Install rsyslog, install the rsyslog-relp input plugin, and enable it on its standard port (2514)
+
+```puppet
+     class { 'syslog':
+       relp => true,
+     }
+```
+
+Install rsyslog, enable the UDP input listener on a non-standard port, and the TCP input listener on the default port:
+
+```puppet
+     class { 'syslog':
+       udp => '55114,
+       tcp => true,
+     }
+```
+
 ## Patches and Testing
 
-Contributions are highly welcomed, more so are those which contribute patches with tests. Or just more tests! We have [rspec-puppet](http://rspec-puppet.com/) and [rspec-system](https://github.com/puppetlabs/rspec-system-serverspec) tests. When [contributing patches](Github WorkFlow), please make sure that your patches pass tests:
+Contributions are highly welcomed, more so are those which contribute patches with tests. Or just more tests! We have [rspec-puppet](http://rspec-puppet.com/) and [rspec-system](https://github.com/puppetlabs/rspec-system-serverspec) tests. When [contributing patches](https://help.github.com/articles/using-pull-requests), please make sure that your patches pass tests:
 
 ```
   igalic@levix ~/src/bw/puppet-rsyslog (git)-[master] % rake spec
