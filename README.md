@@ -23,7 +23,7 @@ Install rsyslog, enable the UDP input listener on a non-standard port, and the T
 
 ```puppet
      class { 'syslog':
-       udp => '55114,
+       udp => '55114',
        tcp => true,
      }
 ```
