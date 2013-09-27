@@ -38,6 +38,14 @@ class rsyslog::params {
   $config  = '/etc/rsyslog.conf'
   $confd   = '/etc/rsyslog.d'
 
+  if $::osfamily == 'RedHat' or $::operatingsystem == 'amazon' {
+    $conf_template     = 'rsyslog/rsyslog.rhel.conf.erb'
+  } elsif $::osfamily == 'Debian' {
+    $conf_template     = 'rsyslog/rsyslog.conf.erb'
+  } else {
+    fail("Class['rsyslog::params']: Unsupported osfamily: ${::osfamily}")
+  }
+
   # by default, rsyslog isn't listening on any ports
   # only on a Unix socket
   $tcp  = false
