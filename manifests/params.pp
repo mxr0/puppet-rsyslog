@@ -38,6 +38,12 @@ class rsyslog::params {
   $config  = '/etc/rsyslog.conf'
   $confd   = '/etc/rsyslog.d'
 
+  case $operatingsystem {
+      'RedHat', 'CentOS': { $conf_template     = 'rsyslog/rsyslog.rhel.conf.erb'  } # apply the redhat class
+      /^(Debian|Ubuntu)$/:{ $conf_template     = 'rsyslog/rsyslog.conf.erb'  } # apply the debian class
+      default:            { $conf_template     = 'rsyslog/rsyslog.conf.erb' } # apply the generic class
+  }
+ 
   # by default, rsyslog isn't listening on any ports
   # only on a Unix socket
   $tcp  = false
