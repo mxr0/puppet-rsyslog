@@ -51,7 +51,7 @@ class rsyslog::config {
 
   file { $config:
     ensure  => present,
-    content => template ('rsyslog/rsyslog.conf.erb'),
+    content => template ($::rsyslog::params::conf_template),
     owner   => 'root',
     group   => 'root',
   }
