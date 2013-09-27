@@ -17,6 +17,12 @@ require 'spec_helper_system'
 describe 'rsyslog class' do
     package_name = 'rsyslog'
     service_name = 'rsyslog'
+    case node.facts['osfamily']
+    when 'RedHat'
+      logfile_name = '/var/log/messages'
+    when 'Debian'
+      logfile_name = '/var/log/syslog'
+    end
 
   context 'default parameters' do
     # Using puppet_apply as a helper
@@ -69,7 +75,7 @@ describe 'rsyslog class' do
     end
 
     it 'should receive log messages on UDP port 514' do
-      shell('logger -d -P 514 "It receives log messages on UDP port 514!" && grep -q "It receives log messages on UDP port 514!" /var/log/syslog') do |r|
+      shell("logger -d -P 514 'It receives log messages on UDP port 514!' && grep -q 'It receives log messages on UDP port 514!' #{logfile_name}") do |r|
         r.exit_code.should == 0
       end
     end
@@ -102,7 +108,7 @@ describe 'rsyslog class' do
     end
 
     it 'should receive log messages on TCP port 5140' do
-      shell('logger -P 5140 "It receives log messages on TCP port 5140!" && grep -q "It receives log messages on TCP port 5140!" /var/log/syslog') do |r|
+      shell("logger -P 5140 'It receives log messages on TCP port 5140!' && grep -q 'It receives log messages on TCP port 5140!' #{logfile_name}") do |r|
         r.exit_code.should == 0
       end
     end
