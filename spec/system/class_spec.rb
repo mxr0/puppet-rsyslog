@@ -19,9 +19,9 @@ describe 'rsyslog class' do
     service_name = 'rsyslog'
     case node.facts['osfamily']
     when 'RedHat'
-      logfile_name = 'messages'
+      logfile_name = '/var/log/messages'
     when 'Debian'
-      logfile_name = 'syslog'
+      logfile_name = '/var/log/syslog'
     end
 
   context 'default parameters' do
@@ -75,7 +75,7 @@ describe 'rsyslog class' do
     end
 
     it 'should receive log messages on UDP port 514' do
-      shell('logger -d -P 514 "It receives log messages on UDP port 514!" && grep -q "It receives log messages on UDP port 514!" /var/log/'+logfile_name) do |r|
+      shell("logger -d -P 514 'It receives log messages on UDP port 514!' && grep -q 'It receives log messages on UDP port 514!' #{logfile_name}") do |r|
         r.exit_code.should == 0
       end
     end
@@ -108,7 +108,7 @@ describe 'rsyslog class' do
     end
 
     it 'should receive log messages on TCP port 5140' do
-      shell('logger -P 5140 "It receives log messages on TCP port 5140!" && grep -q "It receives log messages on TCP port 5140!" /var/log/'+logfile_name) do |r|
+      shell("logger -P 5140 'It receives log messages on TCP port 5140!' && grep -q 'It receives log messages on TCP port 5140!' #{logfile_name}") do |r|
         r.exit_code.should == 0
       end
     end
