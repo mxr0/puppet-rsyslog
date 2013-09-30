@@ -41,7 +41,7 @@ class rsyslog::params {
   case $operatingsystem {
       'RedHat', 'CentOS': { $conf_template     = 'rsyslog/rsyslog.rhel.conf.erb'  } # apply the redhat class
       /^(Debian|Ubuntu)$/:{ $conf_template     = 'rsyslog/rsyslog.conf.erb'  } # apply the debian class
-      default:            { $conf_template     = 'rsyslog/rsyslog.conf.erb' } # apply the generic class
+      default:            { fail("Class['rsyslog::params']: Unsupported osfamily: ${::osfamily}") } # fail on unknown OSes
   }
  
   # by default, rsyslog isn't listening on any ports
